@@ -1,0 +1,7 @@
+# Non-sensitive env vars. Add your app's variables here.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: <APP_NAME>-config
+data:
+  EXAMPLE_VAR: "example-value"

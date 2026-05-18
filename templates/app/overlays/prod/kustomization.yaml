@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: <NAMESPACE>
+
+resources:
+  - ../../base
+  - secret.yaml
+
+# Image tag updated by CI workflow on each build
+images:
+  - name: ghcr.io/<GH_USER_OR_ORG>/<APP_NAME>
+    newTag: latest

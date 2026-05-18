@@ -1,0 +1,36 @@
+name: Update Image Tag in Infra Repo
+
+on:
+  workflow_run:
+    workflows: ["Build and Push to GHCR"]
+    types:
+      - completed
+    branches:
+      - main
+
+jobs:
+  update-tag:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout infra repo
+        uses: actions/checkout@v4
+        with:
+          repository: datasci4citizens/server-infrastructure
+          token: ${{ secrets.INFRA_REPO_PAT }}
+          ref: main
+
+      - name: Update image tag
+        run: |
+          SHA_TAG="sha-${GITHUB_SHA::7}"
+          APP_DIR="apps/${{ vars.APP_NAME }}/overlays/prod"
+
+          cd "$APP_DIR"
+          sed -i "s|newTag: .*|newTag: ${SHA_TAG}|" kustomization.yaml
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add kustomization.yaml
+          git commit -m "chore: bump ${{ vars.APP_NAME }} image to ${SHA_TAG}"
+          git push

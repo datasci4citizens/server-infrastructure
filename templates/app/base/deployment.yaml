@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: <APP_NAME>
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: <APP_NAME>
+  template:
+    metadata:
+      labels:
+        app: <APP_NAME>
+    spec:
+      containers:
+        - name: <APP_NAME>
+          image: ghcr.io/<GH_USER_OR_ORG>/<APP_NAME>:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: <APP_PORT>
+          envFrom:
+            - configMapRef:
+                name: <APP_NAME>-config
+            - secretRef:
+                name: <APP_NAME>-secret
