@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mih-server
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/datasci4citizens/server-infrastructure.git
+    targetRevision: main
+    path: apps/mih-server/overlays/prod
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: mih-server
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

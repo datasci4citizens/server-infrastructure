@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mih-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mih-api
+  template:
+    metadata:
+      labels:
+        app: mih-api
+    spec:
+      containers:
+        - name: mih-api
+          image: ghcr.io/luizlenharo/server-mih:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - configMapRef:
+                name: mih-config
+            - secretRef:
+                name: mih-secret
