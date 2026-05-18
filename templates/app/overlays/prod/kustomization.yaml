@@ -5,7 +5,8 @@ namespace: <NAMESPACE>
 
 resources:
   - ../../base
-  - secret.yaml
+# secret.yaml managed out-of-band (not in git). Apply once manually:
+#   kubectl apply -f secret.yaml -n <NAMESPACE>
 
 # Image tag updated by CI workflow on each build
 images:

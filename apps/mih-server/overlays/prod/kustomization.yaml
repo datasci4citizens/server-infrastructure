@@ -5,7 +5,8 @@ namespace: mih-server
 
 resources:
   - ../../base
-  - secret.yaml
+# secret.yaml managed out-of-band (not in git). Apply once manually:
+#   kubectl apply -f secret.yaml -n mih-server
 
 # Override image tag via CI/CD or manually
 images:
