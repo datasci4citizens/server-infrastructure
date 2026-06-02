@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wounds-config
+data:
+  ALLOWED_HOSTS: "server-wounds.ak8s.ic.unicamp.br,localhost"
+  SERVER_WOUNDS_DATABASE: "postgres"
+  SERVER_WOUNDS_DB_USER: "postgres"
+  SERVER_WOUNDS_DB_HOST: "postgres-service"
+  SERVER_WOUNDS_DB_PORT: "5432"
