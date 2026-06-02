@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wounds-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wounds-api
+  template:
+    metadata:
+      labels:
+        app: wounds-api
+    spec:
+      containers:
+        - name: wounds-api
+          image: ghcr.io/datasci4citizens/server-wounds:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - configMapRef:
+                name: wounds-config
+            - secretRef:
+                name: wounds-secret

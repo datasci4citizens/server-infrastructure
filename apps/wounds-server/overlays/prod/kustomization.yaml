@@ -1,0 +1,14 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: wounds-server
+
+resources:
+  - ../../base
+# secret.yaml managed out-of-band (not in git). Apply once manually:
+#   kubectl apply -f secret.yaml -n wounds-server
+
+# Override image tag via CI/CD or manually
+images:
+  - name: ghcr.io/datasci4citizens/server-wounds
+    newTag: latest
