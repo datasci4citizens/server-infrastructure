@@ -10,5 +10,5 @@ resources:
 
 # Override image tag via CI/CD or manually
 images:
-  - name: ghcr.io/datasci4citizens/server-wounds
+  - name: ghcr.io/luizlenharo/server-wounds
     newTag: latest
