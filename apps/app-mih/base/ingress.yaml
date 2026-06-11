@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: app-mih-ingress
+  # No rewrite-target: paths pass through untouched so the container nginx
+  # serves assets and does the SPA fallback (mirrors wounds-server ingress).
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: app-mih.ak8s.ic.unicamp.br
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: app-mih-service
+                port:
+                  number: 80

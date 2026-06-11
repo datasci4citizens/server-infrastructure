@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-mih
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-mih
+  template:
+    metadata:
+      labels:
+        app: app-mih
+    spec:
+      containers:
+        - name: app-mih
+          # Personal public package for now. When CI (build-push.yml) is wired,
+          # it pushes to ghcr.io/datasci4citizens/app-mih (github.repository) —
+          # switch this and overlays/prod image name to the org then.
+          image: ghcr.io/luizlenharo/app-mih:latest
+          imagePullPolicy: Always
+          # SPA: VITE_* vars are baked into the bundle at build time, so the
+          # container has no runtime env (no configMapRef / secretRef).
+          ports:
+            - containerPort: 80
