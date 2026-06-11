@@ -6,7 +6,7 @@ data:
   DEBUG: "false"
   DEV_MODE: "false"
   ALLOWED_HOSTS: "server-mih.ak8s.ic.unicamp.br,localhost"
-  CORS_ALLOWED_ORIGINS: "https://server-mih.ak8s.ic.unicamp.br"
+  CORS_ALLOWED_ORIGINS: "https://jennette-unrequiting-ghislaine.ngrok-free.dev,https://localhost,https://server-mih.ak8s.ic.unicamp.br"
   DB_NAME: "postgres"
   DB_USER: "postgres"
   DB_HOST: "postgres-service"

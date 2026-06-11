@@ -2,8 +2,14 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: wounds-ingress
+  annotations: 
+    cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
   ingressClassName: nginx
+  tls:
+    - hosts:
+        - server-wounds.ak8s.ic.unicamp.br
+      secretName: wounds-tls
   rules:
     - host: server-wounds.ak8s.ic.unicamp.br
       http:

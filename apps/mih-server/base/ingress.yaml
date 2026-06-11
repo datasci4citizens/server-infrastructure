@@ -4,8 +4,14 @@ metadata:
   name: mih-ingress
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+    cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
   ingressClassName: nginx
+  tls:
+    - hosts:
+        - server-mih.ak8s.ic.unicamp.br
+      secretName: mih-tls
   rules:
     - host: server-mih.ak8s.ic.unicamp.br
       http:
