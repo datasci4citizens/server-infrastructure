@@ -90,15 +90,29 @@ trigger workflow ───────► bump image tag in
 
 ## App repo setup
 
-In each app repo, copy two workflows from `templates/workflows/` to `.github/workflows/`:
-
-- `build-push-ghcr.yml` — builds Docker image, pushes to GHCR
-- `update-infra-image-tag.yml` — bumps tag in this repo after image build
+In each app repo, copy `templates/workflows/deploy-k8s.yml` to `.github/workflows/`.
+One job: builds the Docker image, pushes to GHCR, then bumps the tag in this repo
+(ArgoCD syncs from there). Frontends uncomment the `build-args` block for their
+build-time `VITE_*` vars.
 
 Required in app repo settings (Settings → Secrets and variables → Actions):
 
-- Secret `INFRA_REPO_PAT` — PAT with `repo` scope to push to this infra repo
+- Secret `INFRA_APP_ID` — GitHub App ID (see "GitHub App setup" below)
+- Secret `INFRA_APP_PRIVATE_KEY` — full `.pem` file contents
 - Variable `APP_NAME` — folder name under `apps/` (e.g. `mih-server`)
+
+## GitHub App setup (one-time, org admin)
+
+The infra repo is updated by a GitHub App so commits don't rely on any individual user's PAT.
+
+1. `github.com/organizations/datasci4citizens/settings/apps → New GitHub App`
+2. Name: `infra-deployer`
+3. Webhook: disable
+4. Repository permissions → **Contents: Read and write**
+5. Where installable: "Only on this account"
+6. Create → note **App ID** + generate **Private Key** (downloads `.pem`)
+7. Install App on `server-infrastructure` repo
+8. Share App ID and `.pem` contents with team members; each app repo stores them as secrets `INFRA_APP_ID` and `INFRA_APP_PRIVATE_KEY`
 
 ## Secrets management
 
