@@ -11,4 +11,4 @@ resources:
 # Override image tag via CI/CD or manually
 images:
   - name: ghcr.io/luizlenharo/server-mih
-    newTag: latest
+    newTag: sha-01a8c05
