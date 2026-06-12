@@ -11,4 +11,4 @@ resources:
 # Override image tag via CI/CD or manually
 images:
   - name: ghcr.io/datasci4citizens/server-mih
-    newTag: sha-01a8c05
+    newTag: sha-30f390d
