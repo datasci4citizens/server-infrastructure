@@ -1,0 +1,23 @@
+# App-of-apps root. Apply ONCE:  kubectl apply -f argocd/root-app.yaml
+# Afterwards every argocd/<app>-app.yaml committed to main is auto-discovered
+# and synced by ArgoCD — no per-app `kubectl apply` needed.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: root
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/datasci4citizens/server-infrastructure.git
+    targetRevision: main
+    path: argocd
+    directory:
+      recurse: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

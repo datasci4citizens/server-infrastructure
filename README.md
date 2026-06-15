@@ -58,9 +58,13 @@ K8s manifests and ArgoCD applications for student projects on the UNICAMP IC clu
    kubectl apply -f secret.yaml -n <NAMESPACE>
    ```
 
-7. **Apply ArgoCD app on cluster**:
+7. **Done** — no per-app `kubectl apply`. The app-of-apps `root` Application
+   (`argocd/root-app.yaml`) auto-discovers any `argocd/*-app.yaml` on `main` and
+   syncs it. Just commit + push (step 5).
+
+   First-time cluster setup only — apply the root once:
    ```bash
-   kubectl apply -f argocd/<your-app>-app.yaml
+   kubectl apply -f argocd/root-app.yaml
    ```
 
 ## Deploy flow
