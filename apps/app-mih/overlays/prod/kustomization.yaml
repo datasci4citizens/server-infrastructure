@@ -12,4 +12,4 @@ resources:
 # Switch name to ghcr.io/datasci4citizens/app-mih when CI/org package is in use.
 images:
   - name: ghcr.io/luizlenharo/app-mih
-    newTag: latest
+    newTag: sha-f033462
