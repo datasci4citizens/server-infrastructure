@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-wounds
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-wounds
+  template:
+    metadata:
+      labels:
+        app: app-wounds
+    spec:
+      containers:
+        - name: app-wounds
+          image: ghcr.io/datasci4citizens/app-wounds:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80

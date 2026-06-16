@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: app-wounds-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - app-wounds.ak8s.ic.unicamp.br
+      secretName: app-wounds-tls
+  rules:
+    - host: app-wounds.ak8s.ic.unicamp.br
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: app-wounds-service
+                port:
+                  number: 80
