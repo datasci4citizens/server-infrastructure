@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: wounds-api
-          image: ghcr.io/luizlenharo/server-wounds:latest
+          image: ghcr.io/datasci4citizens/server-wounds:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8000
