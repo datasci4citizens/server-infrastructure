@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: mih-api
-          image: ghcr.io/luizlenharo/server-mih:latest
+          image: ghcr.io/datasci4citizens/server-mih:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8000
