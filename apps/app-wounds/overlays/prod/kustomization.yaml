@@ -11,4 +11,4 @@ resources:
 # Image tag updated by CI workflow on each build.
 images:
   - name: ghcr.io/datasci4citizens/app-wounds
-    newTag: sha-a291561
+    newTag: sha-26f63b3
