@@ -11,4 +11,4 @@ resources:
 # Override image tag via CI/CD or manually
 images:
   - name: ghcr.io/datasci4citizens/server-wounds
-    newTag: sha-3ddb5e1
+    newTag: sha-0c7adc1
