@@ -1,0 +1,93 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: seaweedfs
+spec:
+  serviceName: seaweedfs-headless
+  replicas: 1
+  selector:
+    matchLabels:
+      app: seaweedfs
+  template:
+    metadata:
+      labels:
+        app: seaweedfs
+    spec:
+      containers:
+        - name: seaweedfs
+          # Pin an exact tag. Keep this identical to the tag used in
+          # server-wounds/docker/docker-compose.yml so dev and prod agree.
+          image: chrislusf/seaweedfs:4.39
+          imagePullPolicy: IfNotPresent
+          # All-in-one: master + volume + filer + S3 gateway in one process.
+          # The compose file splits these into four containers sharing one
+          # volume, which cannot be translated to k8s (a RWO PVC is not
+          # shareable across pods).
+          args:
+            - server
+            - -dir=/data
+            - -ip=$(POD_IP)
+            - -ip.bind=0.0.0.0
+            # Cap each volume well under the PVC size. The default is 30000MB,
+            # which lets one volume outgrow a 20Gi disk.
+            - -master.volumeSizeLimitMB=2048
+            - -volume.max=0
+            - -filer
+            - -s3
+            - -s3.port=8333
+            - -s3.config=/etc/seaweedfs/s3config.json
+          env:
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+          ports:
+            - name: master
+              containerPort: 9333
+            - name: volume
+              containerPort: 8080
+            - name: filer
+              containerPort: 8888
+            - name: s3
+              containerPort: 8333
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: s3config
+              mountPath: /etc/seaweedfs
+              readOnly: true
+          readinessProbe:
+            tcpSocket:
+              port: s3
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          # tcpSocket, not httpGet: an httpGet path that returns a non-2xx on
+          # this image would crashloop the pod indefinitely with no useful log.
+          livenessProbe:
+            tcpSocket:
+              port: master
+            initialDelaySeconds: 30
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              memory: 1Gi
+      volumes:
+        - name: s3config
+          secret:
+            secretName: seaweedfs-secret
+            items:
+              - key: s3config.json
+                path: s3config.json
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            # Adjust after checking `kubectl describe resourcequota -n seaweedfs`.
+            storage: 20Gi

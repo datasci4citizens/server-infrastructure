@@ -9,3 +9,21 @@ data:
   SERVER_WOUNDS_DB_USER: "postgres"
   SERVER_WOUNDS_DB_HOST: "postgres-service"
   SERVER_WOUNDS_DB_PORT: "5432"
+
+  # --- SeaweedFS / S3 image storage ---
+  # Deployed by apps/seaweedfs (namespace: seaweedfs).
+  #
+  # This is deliberately the PUBLIC Ingress host, not the internal Service
+  # (seaweedfs-s3.seaweedfs.svc.cluster.local:8333). django-storages signs the
+  # Host header into the presigned URL, so the host Django talks to must be the
+  # same host the browser fetches from. Using the internal name here would
+  # produce URLs no phone can resolve. Verified reachable from inside the
+  # cluster (pod -> public Ingress hairpin returns 200).
+  AWS_S3_ENDPOINT_URL: "https://s3-wounds.ak8s.ic.unicamp.br"
+  AWS_STORAGE_BUCKET_NAME: "wounds"
+  AWS_S3_REGION_NAME: "us-east-1"
+  # Real letsencrypt cert on the Ingress -> verify TLS (settings.py defaults to False).
+  AWS_S3_VERIFY: "True"
+  # Presigned URLs with expiry. The bucket has no anonymous identity, so this
+  # is the only read path — wound photos are never publicly readable.
+  AWS_QUERYSTRING_AUTH: "True"

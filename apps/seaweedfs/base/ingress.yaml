@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: seaweedfs-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    # Wound photos from phone cameras exceed the 1MB nginx default.
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+    # Do NOT add a rewrite-target here. Path-style addressing signs the full
+    # request path (/wounds/observations/...) into the SigV4 signature; any
+    # rewrite invalidates every presigned URL.
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - s3-wounds.ak8s.ic.unicamp.br
+      secretName: seaweedfs-tls
+  rules:
+    - host: s3-wounds.ak8s.ic.unicamp.br
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: seaweedfs-s3
+                port:
+                  number: 8333
