@@ -28,10 +28,23 @@ spec:
             - -dir=/data
             - -ip=$(POD_IP)
             - -ip.bind=0.0.0.0
-            # Cap each volume well under the PVC size. The default is 30000MB,
-            # which lets one volume outgrow a 20Gi disk.
-            - -master.volumeSizeLimitMB=2048
-            - -volume.max=0
+            # Each S3 bucket is a separate SeaweedFS *collection*, and a volume
+            # belongs to exactly one collection. Volume slots must therefore be
+            # plentiful, not merely enough for the total byte count: SeaweedFS
+            # grows ~7 volumes per collection on first write.
+            #
+            # Do NOT set -volume.max=0 here. That auto-computes free_disk /
+            # volumeSizeLimitMB, which on this node yielded 5 slots — all of
+            # them consumed by the default collection at startup, leaving zero
+            # for the "wounds" collection. Every PutObject then failed with
+            # "No writable volumes and no free volumes left".
+            #
+            # 256MB x 20 = 5GB ceiling. The node's disk is shared with postgres
+            # and container images, so this stays deliberately conservative.
+            # Raising either value later just needs a pod restart; the PVC data
+            # survives it.
+            - -master.volumeSizeLimitMB=256
+            - -volume.max=20
             - -filer
             - -s3
             - -s3.port=8333
