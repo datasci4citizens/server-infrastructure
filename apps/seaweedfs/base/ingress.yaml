@@ -26,3 +26,34 @@ spec:
                 name: seaweedfs-s3
                 port:
                   number: 8333
+---
+# Filer web UI: file browser + upload/download, no auth of its own.
+# Locked down with nginx basic auth (seaweedfs-filer-auth Secret, applied
+# out-of-band the same way seaweedfs-secret is — see
+# overlays/prod/secret-filer-auth-example.yaml).
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: seaweedfs-filer-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/auth-type: basic
+    nginx.ingress.kubernetes.io/auth-secret: seaweedfs-filer-auth
+    nginx.ingress.kubernetes.io/auth-realm: "SeaweedFS Filer - Restricted"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - seaweed.ak8s.ic.unicamp.br
+      secretName: seaweedfs-filer-tls
+  rules:
+    - host: seaweed.ak8s.ic.unicamp.br
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: seaweedfs-filer
+                port:
+                  number: 8888
